@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Viasat App'),
+        leading: const Icon(Icons.spa),
       ),
       body: Stack(
         children: [
