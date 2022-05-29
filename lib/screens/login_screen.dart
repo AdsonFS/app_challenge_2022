@@ -22,8 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 margin: const EdgeInsets.only(bottom: 60),
                 child: const Text(
-                  "Login",
+                  "Login Viasat App",
                   style: TextStyle(
+                    color: Color.fromARGB(255, 0, 143, 196),
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
                   ),

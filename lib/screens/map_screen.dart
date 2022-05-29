@@ -128,7 +128,7 @@ class _MapScreenState extends State<MapScreen> {
                     child: FlutterMap(
                       options: MapOptions(
                         maxZoom: 18.00,
-                        minZoom: 6.00,
+                        minZoom: 10.00,
                         center: LatLng((data[0]['point'] as PointMap).latitude,
                             (data[0]['point'] as PointMap).longitude),
                         zoom: 15.0,
