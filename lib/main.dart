@@ -1,6 +1,7 @@
 import 'package:app_challenge/models/point_map.dart';
 import 'package:app_challenge/screens/home_screen.dart';
 import 'package:app_challenge/screens/internet_plan_screen.dart';
+import 'package:app_challenge/screens/login_screen.dart';
 import 'package:app_challenge/screens/map_screen.dart';
 import 'package:app_challenge/screens/search_installer_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,5 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return const HomeScreen();
+    return const LoginScreen();
   }
 }

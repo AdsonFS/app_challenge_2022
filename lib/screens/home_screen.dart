@@ -1,4 +1,5 @@
 import 'package:app_challenge/models/point_map.dart';
+import 'package:app_challenge/screens/background.dart';
 import 'package:app_challenge/screens/internet_plan_screen.dart';
 import 'package:app_challenge/screens/map_screen.dart';
 import 'package:app_challenge/screens/search_installer_screen.dart';
@@ -51,25 +52,31 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Viasat App'),
       ),
-      body: ListView(children: [
-        Column(
-          children: [
-            _createCard('CheckPoints Compartilhados', 'Recurso comunitário',
-                const Icon(Icons.wifi), const MapScreen()),
-            _createCard(
-                'Procurar Por Plano',
-                'Encontre o melhor plano para você',
-                const Icon(Icons.library_add_check),
-                InternetPlanScreen(myLocation)),
-            _createCard(
-                'Procurar Por Instalador',
-                'Procure profissionais na sua área',
-                const Icon(Icons.webhook_rounded),
-                SearchInstallerScreen(myLocation)),
-            const Image(image: AssetImage('img/home_image.png')),
-          ],
-        ),
-      ]),
+      body: Stack(
+        children: [
+          Background(),
+          const Image(image: AssetImage('img/home_image.png')),
+          ListView(children: [
+            Column(
+              children: [
+                Divider(height: 10),
+                _createCard('CheckPoints Compartilhados', 'Recurso comunitário',
+                    const Icon(Icons.wifi), const MapScreen()),
+                _createCard(
+                    'Procurar Por Plano',
+                    'Encontre o melhor plano para você',
+                    const Icon(Icons.library_add_check),
+                    InternetPlanScreen(myLocation)),
+                _createCard(
+                    'Procurar Por Instalador',
+                    'Procure profissionais na sua área',
+                    const Icon(Icons.webhook_rounded),
+                    SearchInstallerScreen(myLocation)),
+              ],
+            ),
+          ])
+        ],
+      ),
     );
   }
 }
