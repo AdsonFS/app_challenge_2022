@@ -1,7 +1,7 @@
 # app_challenge
 
-![Tela de Login](./assets/img/login_screen.png)
-![Tela Inicial](./assets/img/home_screen.png)
+![Tela de Login](./assets/img/login_screen.PNG)
+![Tela Inicial](./assets/img/home_screen.PNG)
 
 Como rodar o projeto
 
