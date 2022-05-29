@@ -20,6 +20,7 @@ class InternetPlanScreen extends StatefulWidget {
 
 class _InternetPlanScreenState extends State<InternetPlanScreen> {
   List<InternetPlan> _internet_plans = [];
+  String dropdownValue = 'BR Brasil';
   @override
   void initState() {
     super.initState();
@@ -27,7 +28,11 @@ class _InternetPlanScreenState extends State<InternetPlanScreen> {
   }
 
   Future<void> fetchInterntPlans() async {
-    const String url = 'https://app-challenge-api.herokuapp.com/plans';
+    String stateQuery = dropdownValue.split(' ')[0] != 'BR'
+        ? '?state=${dropdownValue.split(' ')[0]}'
+        : '';
+    print('State: $stateQuery');
+    String url = 'https://app-challenge-api.herokuapp.com/plans$stateQuery';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) return;
     List<dynamic> list = json.decode(response.body);
@@ -108,23 +113,62 @@ class _InternetPlanScreenState extends State<InternetPlanScreen> {
       ),
       body: ListView(
         children: [
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter a search term',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Região: '),
+              DropdownButton<String>(
+                value: dropdownValue,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                  fetchInterntPlans();
+                },
+                items: <String>[
+                  'BR Brasil',
+                  'AC Acre',
+                  'AL Alagoas',
+                  'AP Amapá',
+                  'AM Amazonas',
+                  'BA Bahia',
+                  'CE Ceara',
+                  'DF Distrito Federal',
+                  'ES Espírito Santo',
+                  'GO Goiás',
+                  'MA Maranhão',
+                  'MT Mato Grosso',
+                  'MS Mato Grosso do Sul',
+                  'MG Minas Gerais',
+                  'PA Pará',
+                  'PB Paraíba',
+                  'PR Paraná',
+                  'PE Pernambuco',
+                  'PI Piauí',
+                  'RJ Rio de Janeiro',
+                  'RN Rio Grande do Norte',
+                  'RS Rio Grande do Sul',
+                  'RO Rondônia',
+                  'RR Roraima',
+                  'SC Santa Catarina',
+                  'SP São Paulo',
+                  'SE Sergipe',
+                  'TO Tocantins'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
-              ),
-            ),
+            ],
           ),
           ..._internet_plans
               .map((el) => Card(
@@ -194,7 +238,7 @@ class _InternetPlanScreenState extends State<InternetPlanScreen> {
                       ),
                     ),
                   ))
-              .toList()
+              .toList(),
         ],
       ),
     );
