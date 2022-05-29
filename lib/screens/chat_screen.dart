@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Column(
               children: [
-                const Text('Por favor seja gentil! :)'),
+                const Text('Por favor, seja gentil!!! :)'),
                 const Text('Qualquer problema denuncia'),
                 const Text('a conversa para a ViasatApp'),
                 ..._messagesChat,

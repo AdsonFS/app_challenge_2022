@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:app_challenge/models/installer.dart';
 import 'package:app_challenge/models/internet_plan.dart';
 import 'package:app_challenge/models/point_map.dart';
+import 'package:app_challenge/screens/search_installer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
@@ -135,24 +136,60 @@ class _InternetPlanScreenState extends State<InternetPlanScreen> {
                       borderRadius: BorderRadius.circular(8),
                       onTap: () {},
                       child: ListTile(
-                        leading: Text('sd'),
-                        title: Text(el.isp),
-                        subtitle: Text(
-                            'Preço: R\$: ${el.pricePerMonth.toStringAsFixed(2)}'),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => SearchInstallerScreen(
+                                      widget.myLocation,
+                                      plan: '?plan=${el.id}',
+                                    )),
+                          );
+                        },
+                        leading: CircleAvatar(
+                          backgroundColor: el.color,
+                          child: const Icon(
+                            Icons.wifi,
+                            color: Colors.white,
+                          ),
+                        ),
+                        title: Center(child: Text(el.isp)),
+                        subtitle: Column(
                           children: [
-                            Icon(Icons.speed),
-                            // Text(
-                            //   'Upload: ${el.uploadSpeed} MB',
-                            //   style: TextStyle(fontSize: 10),
-                            // ),
-                            // Text(
-                            //   'Download: ${el.downloadSpeed} MB',
-                            //   style: TextStyle(fontSize: 10),
-                            // )
+                            Text(
+                              el.description,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              '${el.typeOfInternet} por: R\S${el.pricePerMonth.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
                           ],
+                        ),
+                        trailing: SizedBox(
+                          width: 120,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Icon(Icons.speed),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Upload: ${el.uploadSpeed} MB',
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                  Text(
+                                    'Download: ${el.downloadSpeed} MB',
+                                    style: const TextStyle(fontSize: 10),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

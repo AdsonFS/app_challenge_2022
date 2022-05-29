@@ -3,13 +3,14 @@ import 'dart:math';
 
 import 'package:app_challenge/models/installer.dart';
 import 'package:app_challenge/models/point_map.dart';
+import 'package:app_challenge/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 
 class SearchInstallerScreen extends StatefulWidget {
-  const SearchInstallerScreen(this.myLocation, {super.key});
-
+  const SearchInstallerScreen(this.myLocation, {this.plan = '', super.key});
+  final String? plan;
   final PointMap myLocation;
 
   @override
@@ -25,7 +26,8 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
   }
 
   Future<void> fetchInstallers() async {
-    const String url = 'https://app-challenge-api.herokuapp.com/installers';
+    String url =
+        'https://app-challenge-api.herokuapp.com/installers${widget.plan}';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) return;
     List<dynamic> list = json.decode(response.body);
@@ -34,6 +36,26 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
       installers.add(Installer.fromJson(list[i]));
     }
     setState(() => _installers = installers);
+
+    _installers.sort((a, b) {
+      if (!filterByPrice) {
+        return a.rating.compareTo(b.rating);
+      }
+      return (_calculateDistance(
+                widget.myLocation.latitude,
+                widget.myLocation.longitude,
+                a.lat,
+                a.lng,
+              ) *
+              a.pricePerKm)
+          .compareTo(_calculateDistance(
+                widget.myLocation.latitude,
+                widget.myLocation.longitude,
+                b.lat,
+                b.lng,
+              ) *
+              b.pricePerKm);
+    });
   }
 
   Widget _getRatingWidget(double rating) {
@@ -98,32 +120,58 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
     return 12742 * asin(sqrt(a));
   }
 
+  bool filterByPrice = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Instaladores Viasat'),
+        actions: [
+          Icon(
+            Icons.star,
+            color: filterByPrice
+                ? Colors.grey.shade400
+                : Color.fromARGB(255, 0, 255, 17),
+          ),
+          // Icon(Icons.abc, color: Colors.transparent),
+          Switch(
+            value: filterByPrice,
+            onChanged: (value) {
+              setState(() => filterByPrice = value);
+              _installers.sort((a, b) {
+                if (!value) {
+                  return a.rating.compareTo(b.rating);
+                }
+                return (_calculateDistance(
+                          widget.myLocation.latitude,
+                          widget.myLocation.longitude,
+                          a.lat,
+                          a.lng,
+                        ) *
+                        a.pricePerKm)
+                    .compareTo(_calculateDistance(
+                          widget.myLocation.latitude,
+                          widget.myLocation.longitude,
+                          b.lat,
+                          b.lng,
+                        ) *
+                        b.pricePerKm);
+              });
+            },
+            // activeTrackColor: Colors.grey.shade500,
+            activeColor: Colors.white,
+          ),
+          Icon(
+            Icons.monetization_on_outlined,
+            color: !filterByPrice
+                ? Colors.grey.shade400
+                : Color.fromARGB(255, 0, 255, 17),
+          ),
+          const Icon(Icons.abc, color: Colors.transparent),
+        ],
       ),
       body: ListView(
         children: [
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter a search term',
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
-              ),
-            ),
-          ),
           ..._installers
               .map((el) => Card(
                     shape: RoundedRectangleBorder(
@@ -132,7 +180,13 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
                     elevation: 5,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  ChatScreen('Instalador: ${el.name}')),
+                        );
+                      },
                       child: ListTile(
                         leading: _getEmotionWidget((el.rating / 2).round()),
                         title: Text(el.name),
