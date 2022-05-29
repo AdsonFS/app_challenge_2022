@@ -16,7 +16,6 @@ class Installer {
       json['lng'],
     );
   }
-
   Installer(
       this.id, this.name, this.rating, this.pricePerKm, this.lat, this.lng);
 }

@@ -2,38 +2,39 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app_challenge/models/installer.dart';
+import 'package:app_challenge/models/internet_plan.dart';
 import 'package:app_challenge/models/point_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 
-class SearchInstallerScreen extends StatefulWidget {
-  const SearchInstallerScreen(this.myLocation, {super.key});
+class InternetPlanScreen extends StatefulWidget {
+  const InternetPlanScreen(this.myLocation, {super.key});
 
   final PointMap myLocation;
 
   @override
-  State<SearchInstallerScreen> createState() => _SearchInstallerScreenState();
+  State<InternetPlanScreen> createState() => _InternetPlanScreenState();
 }
 
-class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
-  List<Installer> _installers = [];
+class _InternetPlanScreenState extends State<InternetPlanScreen> {
+  List<InternetPlan> _internet_plans = [];
   @override
   void initState() {
     super.initState();
-    fetchInstallers();
+    fetchInterntPlans();
   }
 
-  Future<void> fetchInstallers() async {
-    const String url = 'https://app-challenge-api.herokuapp.com/installers';
+  Future<void> fetchInterntPlans() async {
+    const String url = 'https://app-challenge-api.herokuapp.com/plans';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) return;
     List<dynamic> list = json.decode(response.body);
-    List<Installer> installers = [];
+    List<InternetPlan> internet_plans = [];
     for (int i = 0; i < list.length; i++) {
-      installers.add(Installer.fromJson(list[i]));
+      internet_plans.add(InternetPlan.fromJson(list[i]));
     }
-    setState(() => _installers = installers);
+    setState(() => _internet_plans = internet_plans);
   }
 
   Widget _getRatingWidget(double rating) {
@@ -124,7 +125,7 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
               ),
             ),
           ),
-          ..._installers
+          ..._internet_plans
               .map((el) => Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -134,19 +135,23 @@ class _SearchInstallerScreenState extends State<SearchInstallerScreen> {
                       borderRadius: BorderRadius.circular(8),
                       onTap: () {},
                       child: ListTile(
-                        leading: _getEmotionWidget((el.rating / 2).round()),
-                        title: Text(el.name),
-                        subtitle: Text('Preço: R\$: ${(_calculateDistance(
-                              widget.myLocation.latitude,
-                              widget.myLocation.longitude,
-                              el.lat,
-                              el.lng,
-                            ) * el.pricePerKm).toStringAsFixed(2)}'),
+                        leading: Text('sd'),
+                        title: Text(el.isp),
+                        subtitle: Text(
+                            'Preço: R\$: ${el.pricePerMonth.toStringAsFixed(2)}'),
                         trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _getRatingWidget(el.rating / 2),
-                            Text((el.rating / 2).toString())
+                            Icon(Icons.speed),
+                            // Text(
+                            //   'Upload: ${el.uploadSpeed} MB',
+                            //   style: TextStyle(fontSize: 10),
+                            // ),
+                            // Text(
+                            //   'Download: ${el.downloadSpeed} MB',
+                            //   style: TextStyle(fontSize: 10),
+                            // )
                           ],
                         ),
                       ),
