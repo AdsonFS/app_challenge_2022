@@ -4,11 +4,7 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-class PointMap {
-  PointMap(this.latitude, this.longitude);
-  final double latitude;
-  final double longitude;
-}
+import '../models/point_map.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
